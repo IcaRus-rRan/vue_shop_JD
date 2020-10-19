@@ -1,27 +1,44 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+
+const Login = () => import('components/Login')
+const Home = () => import('components/Home')
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
+    redirect: '/login'
   },
   {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  }
+    path: '/login',
+		component: Login,
+		meta: {
+			title: '登录'
+		}
+  },
+	{
+    path: '/home',
+    component: Home,
+		meta: {
+			title: '主页' 
+		}
+  },
 ]
 
 const router = new VueRouter({
   routes
+})
+
+router.beforeEach((to, from, next) => {
+	document.title = to.matched[0].meta.title;
+	if (to.path === '/login') return next();
+	const tokenStr = window.sessionStorage.token;
+	if (!tokenStr) {
+		return	next('/login');
+	}
+	next();
 })
 
 export default router
