@@ -4,7 +4,7 @@
     <div class="login_box">
       <!-- 登录头部 -->
       <div class="avatar_box">
-        <img src="~assets/logo.png" alt="" />
+        <img src="~assets/img/logo.png" alt="" />
       </div>
       <!-- 表单区域 -->
       <el-form
@@ -12,15 +12,13 @@
         :rules="loginFormRules"
         label-width="80px"
         class="login_form"
-        ref="loginFormRef"
-      >
+        ref="loginFormRef">
         <!-- 用户名 -->
         <el-form-item label="用户名:" prop="username">
           <el-input
             prefix-icon="el-icon-user"
             placeholder="请输入用户名"
-            v-model="loginForm.username"
-          >
+            v-model="loginForm.username">
           </el-input>
         </el-form-item>
         <!-- 密码 -->
@@ -29,8 +27,7 @@
             prefix-icon="el-icon-lock"
             placeholder="请输入密码"
             v-model="loginForm.password"
-            type="password"
-          >
+            type="password">
           </el-input>
         </el-form-item>
         <!-- 按钮区域 -->
@@ -55,30 +52,12 @@ export default {
       },
       loginFormRules: {
         username: [
-          {
-            required: true,
-            message: "请输入用户名",
-            trigger: "blur",
-          },
-          {
-            min: 3,
-            max: 8,
-            message: "长度在 3 到 8 个字符",
-            trigger: "blur",
-          },
+          { required: true,  message: "请输入用户名", trigger: "blur", },
+          { min: 3, max: 8, message: "长度在 3 到 8 个字符", trigger: "blur", },
         ],
         password: [
-          {
-            required: true,
-            message: "请输入密码",
-            trigger: "blur",
-          },
-          {
-            min: 6,
-            max: 8,
-            message: "长度在 6 到 8 个字符",
-            trigger: "blur",
-          },
+          { required: true, message: "请输入密码", trigger: "blur", },
+          { min: 6, max: 8, message: "长度在 6 到 8 个字符", trigger: "blur", },
         ],
       },
     };
@@ -109,7 +88,7 @@ export default {
 							window.sessionStorage.setItem('token', res.data.data.token);
 							setTimeout(() => {
 								this.$router.push('/home');
-							},2500)
+							}, 1500)
 						} else {
 							msg.type = 'error';
 							this.$message(msg);
