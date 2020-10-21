@@ -6,6 +6,16 @@ export function request(config) {
 		baseURL: 'http://127.0.0.1:8888/api/private/v1/',
 		timeout: 5000
 	})
+
+	instance.interceptors.request.use(configg => {
+		// console.log(configg);
+		configg.headers.Authorization = window.sessionStorage.getItem('token');
+		return configg
+	}, err => {
+		console.log(err);
+		return err
+	})
+
 	return instance(config)
 }
 
