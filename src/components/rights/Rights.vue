@@ -9,7 +9,7 @@
     </el-breadcrumb>
 
     <!-- 卡片视图 -->
-		<el-card>
+		<el-card>  
 
       <!-- 权限列表区域 -->
 			<el-table :data="rightsList" stripe style="width: 100%">
