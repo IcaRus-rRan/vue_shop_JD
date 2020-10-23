@@ -38,14 +38,11 @@
 
       <!-- 用户列表区域 -->
       <el-table :data="userList" stripe style="width: 100%">
-        <el-table-column type="index" label="#" width="50"> </el-table-column>
-        <el-table-column prop="username" label="姓名" width="180">
-        </el-table-column>
+        <el-table-column type="index" label="#" width="50"></el-table-column>
+        <el-table-column prop="username" label="姓名" width="180"></el-table-column>
         <el-table-column prop="email" label="邮箱"> </el-table-column>
-        <el-table-column prop="mobile" label="电话" width="150">
-        </el-table-column>
-        <el-table-column prop="role_name" label="角色" width="180">
-        </el-table-column>
+        <el-table-column prop="mobile" label="电话" width="150"></el-table-column>
+        <el-table-column prop="role_name" label="角色" width="180"></el-table-column>
         <el-table-column label="状态">
           <template v-slot="scope">
             <el-switch
@@ -69,7 +66,11 @@
               content="分配角色"
               placement="top-start"
               :enterable="false">
-              <el-button type="warning" icon="el-icon-setting" circle></el-button>
+              <el-button 
+							  type="warning" 
+								icon="el-icon-setting" 
+								circle
+								@click="showSetRolesDialog(scope.row)"></el-button>
             </el-tooltip>
             <el-button type="danger" icon="el-icon-delete" circle @click="removeUser(scope.row.id)"></el-button>
           </template>
@@ -144,7 +145,34 @@
       </div>
     </el-dialog>
 		
-		
+		<!-- 分配角色弹出的对话框 -->
+		<el-dialog 
+			title="分配角色" 
+			:visible.sync="setRolesDialogVisible" 
+			width="480px"
+			modal-append-to-body
+			@close="setRolesDialogClosed">
+			<!-- 主体区域 -->
+				<div>
+					<p>当前的用户：{{ userinfo.username }}</p>
+					<p>当前的角色：{{ userinfo.role_name }}</p>
+					<p>分配新角色：
+						<el-select v-model="selectedRoleId" placeholder="请选择">
+							<el-option
+								v-for="item in rolesList"
+								:key="item.id"
+								:label="item.roleName"
+								:value="item.id">
+							</el-option>
+						</el-select>
+					</p>
+				</div>
+			<!-- 底部按钮 -->
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="setRolesDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="saveRoleInfo">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -162,6 +190,7 @@ export default {
 			callback(new Error('请输入合法的手机号码'));
 		}
     return {
+			userinfo: {},
 			// 获取用户列表的参数
       queryInfo: {
         url: "users",
@@ -174,10 +203,16 @@ export default {
 			// 用户列表区域内容
       userList: [],
 			total: 0,
+			// 所有角色列表
+			rolesList: [],
+			// 设置角色 选定的角色id
+			selectedRoleId: [],
 			// 控制 添加用户 弹框的显示隐藏
 			addDialogVisible: false,
 			// 控制 编辑用户 弹框的显示隐藏
 			editDialogVisible: false,
+			// 控制 编辑用户 弹框的显示隐藏
+			setRolesDialogVisible: false,
 			// 添加用户的表单数据
 			addForm: {
 				username: '',
@@ -219,6 +254,45 @@ export default {
 		this.getUserList();
   },
   methods: {
+		// 显示设置角色对话框
+		showSetRolesDialog(userinfo) {
+			this.userinfo = userinfo;
+			request({
+				url: 'roles',
+			}).then(res => {
+				this.rolesList = res.data.data;
+			}).catch(err => {
+				console.log(err);
+			})
+			this.setRolesDialogVisible = true;
+		},
+		// 设置角色 确定按钮
+		saveRoleInfo() {
+			if(!this.selectedRoleId) {
+				return this.$message.error('请选择要分配的角色')
+			}
+			request({
+				url: `users/${this.userinfo.id}/role`,
+				method: 'put',
+				data: {
+					rid: this.selectedRoleId
+				}
+			}).then(res => {
+				if(res.data.meta.status !== 200) {
+					return this.$message.error(res.data.meta.msg);
+				}
+				this.$message.success(res.data.meta.msg);
+				this.setRolesDialogVisible = false;
+				this.getUserList();
+			}).catch(err => {
+				console.log(err);
+			})
+		},
+		// 设置角色对话框 关闭 重置 roleId
+		setRolesDialogClosed() {
+			this.selectedRoleId = '';
+			this.userinfo = {}
+		},
 		// 根据id 删除对应角色
 		removeUser(id) {
 			this.$confirm('确认要删除此用户吗？', '提示',{
@@ -230,9 +304,14 @@ export default {
 						method: 'delete',
 						url: `users/${id}`
 					}).then(res => {
+						if(res.data.meta.status !== 200) {
+							return this.$message.error(res.data.meta.msg);
+						}
 						this.$message.success(res.data.meta.msg);
+						this.queryInfo.params.pagenum = 1;
 						this.getUserList();
 					}).catch(err => {
+						console.log(err);
 						this.$message.error(res.data.meta.msg);
 					})
 			}).catch(err => {
