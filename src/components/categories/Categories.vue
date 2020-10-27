@@ -77,7 +77,7 @@
 					<el-tag type="success" v-else-if="scope.row.cat_level == 1" size="medium">二级</el-tag>
 					<el-tag type="warning" v-else size="medium">三级</el-tag>
 				</template>
-				<template v-slot:operation >
+				<template v-slot:operation width="180px">
 					<el-button 
 						type="primary" 
 						icon="el-icon-edit"
@@ -174,6 +174,7 @@ export default {
 			columns: [{
 				label: '分类名称',
 				prop: 'cat_name',
+				width: '120px'
 			},{
 				label: '是否有效',
 				prop: 'cat_deleted',
@@ -188,7 +189,8 @@ export default {
 				label: '操作',
 				prop: 'cat_level',
 				type: 'template',
-				template: 'operation'
+				template: 'operation',
+				width: '200px'
 			}],
 			addCateFormRules: {
 				cat_name: [
