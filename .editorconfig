@@ -15,7 +15,7 @@ indent_style = tab
 indent_size = 2
  
 # 结尾换行符，可选"lf"、"cr"、"crlf"
-end_of_line = lf
+end_of_line = crlf
  
 # 在文件结尾插入新行
 insert_final_newline = true
