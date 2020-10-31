@@ -1,5 +1,7 @@
 // 封装axios
 import axios from 'axios'
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 
 export function request(config) {
 	const instance = axios.create({
@@ -9,6 +11,8 @@ export function request(config) {
 
 	instance.interceptors.request.use(configg => {
 		// console.log(configg);
+		// request拦截器 显示进度条
+		NProgress.start();
 		configg.headers.Authorization = window.sessionStorage.getItem('token');
 		return configg
 	}, err => {
@@ -16,14 +20,11 @@ export function request(config) {
 		return err
 	})
 
+	instance.interceptors.response.use(config => {
+		//response拦截器 隐藏进度条
+		NProgress.done()
+		return config
+	})
+
 	return instance(config)
 }
-
-// export function requestt(config) {
-// 	const instance = axios.create({
-// 		baseURL: 'http://localhost:999/',
-// 		timeout: 5000
-// 	})
-
-// 	return instance(config)
-// }

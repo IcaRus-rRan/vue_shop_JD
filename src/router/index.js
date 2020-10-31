@@ -1,17 +1,20 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-const Login = () => import('components/Login')
-const Home = () => import('components/Home')
-const Welcome = () => import('components/Welcome')
-const Users = () => import('components/users/Users')
-const Roles = () => import('components/rights/Roles')
-const Rights = () => import('components/rights/Rights')
-const Goods = () => import('components/categories/Goods')
-const Params = () => import('components/categories/Params')
-const Orders = () => import('components/orders/Orders')
-const Reports = () => import('components/reports/Reports')
-const Categories = () => import('components/categories/Categories')
+const Login = () => import(/* webpackChunkName: "login_home_welcome"*/ 'components/Login')
+const Home = () => import(/* webpackChunkName: "login_home_welcome"*/ 'components/Home')
+const Welcome = () => import(/* webpackChunkName: "login_home_welcome"*/ 'components/Welcome')
+
+const Users = () => import(/* webpackChunkName: "user_role_right"*/ 'components/users/Users')
+const Roles = () => import(/* webpackChunkName: "user_role_right"*/ 'components/rights/Roles')
+const Rights = () => import(/* webpackChunkName: "user_role_right"*/ 'components/rights/Rights')
+
+const Goods = () => import(/* webpackChunkName: "good_param_category"*/ 'components/categories/Goods')
+const Params = () => import(/* webpackChunkName: "good_param_category"*/ 'components/categories/Params')
+const Categories = () => import(/* webpackChunkName: "good_param_category"*/ 'components/categories/Categories')
+
+const Orders = () => import(/* webpackChunkName: "order_report"*/ 'components/orders/Orders')
+const Reports = () => import(/* webpackChunkName: "order_report"*/ 'components/reports/Reports')
 
 Vue.use(VueRouter)
 
@@ -19,7 +22,7 @@ const routes = [
 	{ path: '/', redirect: '/home' },
 	{ path: '/login', component: Login, meta: { title: '登录' } },
 	{
-		path: '/home', component: Home, redirect: '/welcome', meta: { title: '主页' },
+		path: '/home', component: Home, redirect: '/welcome', meta: { title: '后台管理系统' },
 		children: [
 			{ path: '/welcome', component: Welcome },
 			{ path: '/users', component: Users },
